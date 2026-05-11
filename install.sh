@@ -6,6 +6,7 @@
 #   ./install.sh --force                  # overwrite existing skills without asking
 #   ./install.sh --skip-existing          # skip any skill already installed
 #   ./install.sh --target /custom/path    # install to a custom directory
+#   ./install.sh --package                # generate zips for Claude.ai upload
 
 set -e
 
@@ -26,6 +27,7 @@ while [[ $# -gt 0 ]]; do
     --force)         MODE="force";        shift ;;
     --skip-existing) MODE="skip";         shift ;;
     --target)        TARGET="$2";         shift 2 ;;
+    --package)       MODE="package";      shift ;;
     -h|--help)
       cat <<EOF
 install.sh — install procurement skills into Claude's skills directory.
@@ -34,6 +36,8 @@ Options:
   --force            Overwrite existing skills without prompting.
   --skip-existing    Skip skills that already exist (no overwrite).
   --target PATH      Install into a custom directory (otherwise auto-detected).
+  --package          Generate upload-ready zips in dist/ for Claude.ai web
+                     and Claude Desktop (no filesystem install).
   -h, --help         Show this help.
 
 Default Claude skills directory locations:
@@ -46,6 +50,46 @@ EOF
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
+
+# ----------------------------------------------------------------------
+# Package mode: generate zips for Claude.ai upload
+# ----------------------------------------------------------------------
+if [[ "$MODE" == "package" ]]; then
+  DIST="$SCRIPT_DIR/dist"
+  mkdir -p "$DIST"
+  rm -f "$DIST"/*.zip
+  echo "Packaging skills as zips for Claude.ai / Claude Desktop upload"
+  echo "Output directory: $DIST"
+  echo
+  for SKILL in "${SKILLS[@]}"; do
+    SRC="$SCRIPT_DIR/$SKILL"
+    if [[ ! -d "$SRC" ]]; then
+      echo "  [SKIP] $SKILL — source folder not found"
+      continue
+    fi
+    # Important: zip the FOLDER so the zip extracts to <skill-name>/SKILL.md
+    # not loose files. Claude.ai expects this structure.
+    (cd "$SCRIPT_DIR" && zip -rq "$DIST/${SKILL}.zip" "$SKILL" \
+      -x "*.DS_Store" "*/.*")
+    SIZE=$(du -h "$DIST/${SKILL}.zip" | cut -f1)
+    echo "  [PACKAGED] $SKILL → dist/${SKILL}.zip ($SIZE)"
+  done
+  echo
+  echo "============================================================"
+  echo "Done. ${#SKILLS[@]} zips ready in: $DIST"
+  echo "============================================================"
+  echo
+  echo "Next steps:"
+  echo "  1. Open Claude.ai in your browser"
+  echo "  2. Go to: Settings > Capabilities > Skills (or Settings > Features)"
+  echo "  3. Click 'Upload skill' and select each zip from dist/"
+  echo "  4. Once uploaded, skills appear in the / menu across Claude.ai"
+  echo "     web, Claude Desktop, Claude mobile, and Cowork"
+  echo
+  echo "See INSTALL.md for screenshots and full step-by-step."
+  echo
+  exit 0
+fi
 
 # ----------------------------------------------------------------------
 # Resolve target directory

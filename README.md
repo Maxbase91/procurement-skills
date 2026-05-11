@@ -28,32 +28,46 @@ If you have Claude.ai Pro/Team or Claude Code, you can install these in 5 minute
 
 ## Quick install
 
-### Option A: Claude.ai (Cowork / desktop)
+These skills work in three places. Pick the one you use most — full
+details in [INSTALL.md](INSTALL.md).
 
-The skills directory location depends on your Claude environment. The general pattern:
+### Most users: Claude.ai web / Claude Desktop / mobile / Cowork
 
-1. Clone or download this repo
-2. Copy each skill folder (e.g. `redline-sentry/`) into your Claude skills directory
-3. Claude auto-discovers skills from the directory on next session
-
-If you're using Cowork or the desktop app, see Anthropic's [skills documentation](https://docs.claude.com) for the exact path on your platform.
-
-### Option B: Claude Code
-
-```bash
-# Clone the repo
-git clone https://github.com/YOURUSERNAME/procurement-skills.git
+```
+git clone https://github.com/YOUR_USERNAME/procurement-skills.git
 cd procurement-skills
+./install.sh --package
+```
 
-# Run the install script
+This produces 5 upload-ready zips in `dist/`. Then in Claude.ai:
+**Settings → Capabilities → Skills → Upload skill**. Upload each zip.
+Once uploaded, the skills appear in the slash menu (`/redline-sentry`,
+`/spend-prism`, etc.) across Claude.ai web, Desktop, mobile, and
+Cowork — anywhere your Anthropic account logs in.
+
+Requires Claude.ai Pro/Max/Team/Enterprise with code execution enabled.
+
+### Developers: Claude Code
+
+```
+git clone https://github.com/YOUR_USERNAME/procurement-skills.git
+cd procurement-skills
 ./install.sh
 ```
 
-The script copies all five skills to `~/.claude/skills/` and tells you what was installed.
+Copies all 5 skills to `~/.claude/skills/`. They're available in your
+next Claude Code session as slash commands and auto-trigger from
+natural language.
 
-### Option C: Manual
+### API workspaces
 
-Each skill folder is self-contained. Drop any folder into your skills directory; they're independent of each other. (The exception is `procure-voice`, which is referenced by the other four — but they all work without it, just with a slightly less opinionated tone.)
+See [INSTALL.md](INSTALL.md) for API upload. Note that skills uploaded
+to the API are not visible in Claude.ai web or Claude Code — each
+surface has its own skill store.
+
+**Important**: skills do not sync between surfaces. If you use Claude.ai
+AND Claude Code, install in both. The skills themselves are identical;
+the storage is what differs.
 
 ## Customising for your organisation
 
