@@ -1,0 +1,97 @@
+# supplier-truthcheck — your editable configuration
+
+# ============================================================
+# WHICH CHECKS TO RUN
+# ============================================================
+checks:
+  structural_validation: true          # IBAN, VAT format, tax ID format
+  online_vat_verification: true        # VIES / HMRC / BZSt
+  entity_register_lookup: true         # Companies House / Handelsregister / etc.
+  address_verification: true           # web search + register cross-check
+  sanctions_screening: true            # OFAC / EU / UK / UN
+  pep_screening: true                  # OpenSanctions
+  duplicate_detection: true            # within-batch duplicates
+
+# ============================================================
+# SANCTIONS LISTS
+# ============================================================
+sanctions:
+  lists_to_check:
+    - "OFAC SDN"
+    - "EU Consolidated"
+    - "UK Sanctions"
+    - "UN Consolidated"
+  # Fuzzy match Levenshtein distance threshold — under this = likely hit
+  fuzzy_match_threshold: 3
+  # Should aliases (aka/fka) be matched?
+  match_aliases: true
+  # Address-based matching (sanctions lists publish addresses)
+  match_by_address: true
+
+# ============================================================
+# PEP SCREENING
+# ============================================================
+pep:
+  source: "opensanctions"              # opensanctions | manual | both
+  scope: "directors_and_uboshareholders"
+  # Categories to flag
+  categories:
+    - "Politicians"
+    - "Senior judiciary"
+    - "Senior military"
+    - "State-owned enterprise executives"
+    - "Family and close associates"
+
+# ============================================================
+# VAT VALIDATION STRICTNESS
+# ============================================================
+vat:
+  require_name_match: true             # registered name must match supplier record
+  name_match_tolerance: "partial_ok"   # exact | partial_ok | fuzzy
+  # If service unavailable, what do?
+  on_service_error: "flag_for_retry"   # flag_for_retry | fail | warn_only
+  # BZSt strong-check for German USt-ID (requires name + address match)
+  use_bzst_strong_check_for_de: true
+
+# ============================================================
+# RATE LIMITING (for bulk validation)
+# ============================================================
+rate_limits:
+  vies_requests_per_minute: 25         # under VIES limit of ~30
+  hmrc_requests_per_minute: 50
+  delay_between_calls_seconds: 2.5
+  # Above this batch size, warn the user about how long it'll take
+  warn_above_n_suppliers: 50
+
+# ============================================================
+# DUPLICATE DETECTION
+# ============================================================
+duplicates:
+  # Hard signals (any single one triggers a duplicate flag)
+  hard_signals:
+    - "same_iban"
+    - "same_vat_number"
+    - "same_registered_company_number"
+  # Soft signals (combined together to score duplicate probability)
+  soft_signals:
+    - "same_address"
+    - "similar_name_levenshtein_under_5"
+    - "same_director_set"
+  # Score threshold for soft-signal duplicates
+  soft_signal_threshold: 2
+
+# ============================================================
+# OUTPUT
+# ============================================================
+output:
+  per_supplier_format: "markdown"      # markdown | xlsx | both
+  bulk_threshold: 10                   # >10 suppliers → produce XLSX
+  always_xlsx_for_bulk: true
+  include_evidence_links: true         # link out to register entries when possible
+  tone: "honest"                       # procure-voice compliant
+  
+  # Status colour scheme
+  status_codes:
+    clear: "🟢"
+    review: "🟡"
+    block: "🚨"

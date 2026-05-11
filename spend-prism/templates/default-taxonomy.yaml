@@ -1,0 +1,79 @@
+# Default taxonomy reference — L1 / L2 starter for procurement spend
+# Use this as a starting point in config.yaml if you don't have your own.
+# Aligned loosely with how most corporates structure indirect spend.
+
+L1_IT:
+  - Software (perpetual licences)
+  - SaaS / Cloud
+  - Hardware (servers, laptops, peripherals)
+  - Telecoms (voice, data, mobile)
+  - IT Professional Services (consultancy, implementation)
+  - IT Support & Managed Services
+
+L1_Marketing:
+  - Advertising (paid media — digital, print, OOH)
+  - Events (sponsorship, hosted)
+  - Agency Services (creative, media, PR)
+  - Marketing Technology
+  - Market Research
+  - Production (video, print, swag)
+
+L1_Facilities:
+  - Rent & Leases
+  - Utilities (energy, water, waste)
+  - Cleaning & Janitorial
+  - Maintenance & Repairs
+  - Security
+  - Office Supplies & Consumables
+  - F&B / Catering
+
+L1_Travel_and_Entertainment:
+  - Air Travel
+  - Rail Travel
+  - Hotel & Accommodation
+  - Ground Transport (taxi, car hire, ride-share)
+  - Conference Fees
+  - Client Entertainment
+  - Mileage & Personal Reimbursement
+
+L1_Professional_Services:
+  - Legal
+  - Management Consulting
+  - Audit & Accounting
+  - Tax Advisory
+  - Recruitment & Staffing
+  - Training & Development
+  - HR Consulting
+
+L1_HR_and_People:
+  - Health & Medical Benefits
+  - Pension & Retirement
+  - Wellbeing & EAP
+  - Background Checks
+  - Payroll Services
+
+L1_Logistics_and_Distribution:
+  - Freight (air, sea, road)
+  - Warehousing & Storage
+  - Last Mile Delivery
+  - Customs & Duties
+  - Packaging
+
+L1_Manufacturing_and_Operations:
+  # Only relevant for product businesses; omit if pure services
+  - Direct Materials
+  - Indirect Materials (MRO)
+  - Capital Equipment
+  - Tooling
+  - Contract Manufacturing
+
+L1_Financial_Services:
+  - Banking Fees
+  - Insurance
+  - FX & Treasury
+  - Card Processing Fees
+
+L1_Other:
+  - Intercompany / Recharges
+  - Uncategorised
+  - Pass-through

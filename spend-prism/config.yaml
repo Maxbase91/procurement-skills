@@ -1,0 +1,111 @@
+# spend-prism — your editable spend analysis configuration
+
+# Reporting currency. All amounts will be converted/displayed in this.
+currency: "EUR"
+
+# ============================================================
+# TAXONOMY
+# ============================================================
+# Choose one:
+#   - "user_defined" → use the categories listed below in user_taxonomy
+#   - "unspsc" → use UNSPSC segment level (most common)
+#   - "eclass" → eClass (common in DACH region)
+#   - "ai" → let the skill infer categories from supplier name + description
+taxonomy_mode: "user_defined"
+
+user_taxonomy:
+  IT:
+    - Software
+    - SaaS / Cloud
+    - Hardware
+    - Telecoms
+    - IT Services
+  Marketing:
+    - Advertising
+    - Events
+    - Agency Services
+    - Marketing Tech
+    - PR
+  Facilities:
+    - Rent
+    - Utilities
+    - Cleaning
+    - Maintenance
+    - Office Supplies
+  Travel:
+    - Air
+    - Rail
+    - Hotel
+    - Ground Transport
+    - T&E Other
+  Professional Services:
+    - Legal
+    - Consulting
+    - Audit & Accounting
+    - Recruitment
+    - Training
+  HR:
+    - Benefits
+    - Payroll Services
+    - Wellbeing
+  Logistics:
+    - Freight
+    - Warehousing
+    - Last Mile
+  Other:
+    - Uncategorised
+    - Intercompany
+
+# ============================================================
+# ANOMALY THRESHOLDS
+# ============================================================
+anomaly_thresholds:
+  price_variance_pct: 20          # >20% price variance for same supplier+item = flag
+  duplicate_suspect_window_days: 5  # same amount, same supplier, within N days
+  spike_multiple: 3.0             # supplier spend > 3x rolling avg = flag
+  category_concentration_pct: 50  # single supplier > 50% of category = flag
+  round_number_cluster_count: 5   # 5+ round-number invoices in a period = flag
+
+# ============================================================
+# TAIL SPEND
+# ============================================================
+tail_spend:
+  # Tail = suppliers whose individual spend is in the bottom N%
+  bottom_percentile: 20
+  # OR: tail = any supplier with annual spend below this amount
+  threshold_amount: 10000
+  # Use whichever surfaces more suppliers (most useful default)
+  mode: "max_coverage"   # max_coverage | percentile_only | threshold_only
+
+# ============================================================
+# CONSOLIDATION SIGNALS
+# ============================================================
+consolidation_signals:
+  same_category_threshold: 3      # >3 suppliers in same L2 with low individual spend
+  preferred_suppliers: []         # add your preferred supplier list here for maverick spend detection
+  # Example:
+  # preferred_suppliers:
+  #   - name: "Viking"
+  #     category: "Office Supplies"
+  #   - name: "Microsoft"
+  #     category: "SaaS / Cloud"
+
+# ============================================================
+# DATA QUALITY
+# ============================================================
+data_quality:
+  normalise_supplier_names: true
+  flag_missing_categories: true
+  flag_low_confidence: true
+  confidence_threshold: 0.7
+
+# ============================================================
+# OUTPUT
+# ============================================================
+output:
+  default_format: "markdown"      # markdown | xlsx | both
+  always_produce_xlsx_above_rows: 500
+  include_pivot_by_category: true
+  include_tail_spend_section: true
+  include_savings_opportunities: true
+  tone: "honest"                  # procure-voice compliant

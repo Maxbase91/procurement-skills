@@ -1,0 +1,138 @@
+# bid-compass — your editable RFP configuration
+
+# ============================================================
+# GENERATION QUALITY GATES
+# ============================================================
+# These must all pass before an RFP can be issued. If a gate fails,
+# the skill will tell the user and ask whether to proceed with a noted gap.
+generation_quality_gates:
+  demand_defined: true                   # clear business outcome stated
+  budget_range_or_waiver: true           # ranges OK; "no idea" is not
+  evaluation_criteria_identified: true   # what does good look like?
+  scoring_weights_agreed: true           # sum to 100, no single > 50% w/o justification
+  mandatory_separated_from_desirable: true   # gates vs scored items
+  stakeholder_roles_identified: true     # who scores, who decides
+  realistic_timeline: true               # min 2 weeks vendor response window
+  
+  # Justification overrides — these allow exceptions when business reality demands
+  allow_single_criterion_over_50_pct: false  # set true only with written justification
+  allow_response_window_under_2_weeks: false # emergency tender only
+
+# ============================================================
+# EVALUATION QUALITY GATES
+# ============================================================
+evaluation_quality_gates:
+  mandatory_gates_checked_first: true        # always check pass/fail before scoring
+  same_criteria_applied_all_vendors: true    # symmetry
+  evidence_required_per_score: true          # cite the response, don't invent
+  disqualified_vendors_not_scored: true      # don't waste effort
+
+# ============================================================
+# SCORING SCALE
+# ============================================================
+scoring:
+  scale: "1-5"           # 1-5 | 1-10 | 0-100
+  scale_definitions:
+    "1": "Does not meet requirement; significant concerns"
+    "2": "Partially meets; clear gaps"
+    "3": "Meets requirement"
+    "4": "Exceeds requirement"
+    "5": "Significantly exceeds; competitive advantage"
+  tie_break_method: "commercial_score"  # commercial_score | risk_score | manual
+
+# ============================================================
+# CATEGORY-SPECIFIC SCORING TEMPLATES
+# ============================================================
+# Each must sum to 100. Override per RFP if needed.
+scoring_templates:
+  
+  saas_software:
+    Commercial: 30
+    Functional fit: 30
+    Technical and security: 20
+    Service and support: 10
+    Risk and compliance: 10
+  
+  professional_services:
+    Methodology: 30
+    Team and references: 25
+    Commercial: 25
+    Cultural fit / approach: 10
+    Risk: 10
+  
+  hardware:
+    Commercial / TCO: 35
+    Technical spec fit: 25
+    Quality and warranty: 15
+    Delivery and logistics: 15
+    Supplier risk: 10
+  
+  agency_creative:
+    Capability and creative response: 35
+    Team and chemistry: 20
+    Commercial: 20
+    References / case studies: 15
+    Approach: 10
+  
+  facilities_services:
+    Commercial: 35
+    Service capability: 25
+    Account management: 15
+    HSE and compliance: 15
+    Innovation / value-add: 10
+
+# ============================================================
+# MANDATORY GATES (TYPICAL)
+# ============================================================
+# These are examples. Override per RFP based on category.
+default_mandatory_gates:
+  saas_software:
+    - "Annual revenue minimum (state amount)"
+    - "ISO 27001 or SOC 2 Type II certified"
+    - "GDPR/UK GDPR compliant with executable DPA"
+    - "Operates legally in [jurisdiction]"
+    - "Insurance: minimum cyber liability cover"
+  professional_services:
+    - "Relevant insurance (PI minimum amount)"
+    - "Operates legally in [jurisdiction]"
+    - "No conflict of interest with [list]"
+  hardware:
+    - "Manufacturer / authorised distributor"
+    - "Warranty minimum (years)"
+    - "Delivery to required locations"
+
+# ============================================================
+# RFP DOCUMENT STRUCTURE
+# ============================================================
+rfp_sections:
+  - "Introduction and company context"
+  - "Scope and requirements"
+  - "Commercial requirements"
+  - "Technical and security requirements"
+  - "Service and support requirements"
+  - "Submission instructions"
+  - "Evaluation methodology"
+  - "Terms and contracting"
+  - "Appendix A: Response template"
+  - "Appendix B: Pricing template"
+
+# ============================================================
+# TIMELINE DEFAULTS
+# ============================================================
+timeline_defaults:
+  q_and_a_period_days: 5
+  response_window_days: 21         # 3 weeks default
+  evaluation_days: 10
+  shortlist_to_demo_days: 7
+  demo_to_decision_days: 14
+  contract_negotiation_days: 21    # excluding redline cycles
+
+# ============================================================
+# OUTPUT
+# ============================================================
+output:
+  generate_docx_rfp: true
+  generate_xlsx_pricing_template: true
+  generate_xlsx_scoring_matrix: true
+  tone: "honest"                   # procure-voice compliant
+  include_category_advice: true    # always include category-specific tips

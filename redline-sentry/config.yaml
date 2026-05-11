@@ -1,0 +1,128 @@
+# redline-sentry — your editable risk playbook
+# Edit this file to match your organisation's standards.
+# The default values are sensible starting points for a typical B2B
+# software/services procurement context. Adjust based on your risk appetite.
+
+jurisdiction:
+  primary: "English law"           # English law / German law / Swiss law / etc.
+  acceptable_alternatives:
+    - "English law"
+    - "Laws of [your home jurisdiction]"
+  unacceptable:
+    - "Laws of [counterparty's preferred jurisdiction without reciprocity]"
+
+# Below this contract value, downgrade non-DPA issues by one severity level.
+# Rationale: don't fight a €500/year invoice over indemnity language.
+contract_value_threshold_eur: 50000
+
+# ============================================================
+# LIABILITY
+# ============================================================
+liability:
+  minimum_cap_multiple: 12          # months of fees
+  preferred_cap_multiple: 24
+  data_breach_carve_out_required: true   # data breach liability should be UNCAPPED or super-cap
+  ip_indemnity_carve_out_required: true  # IP infringement claims should sit outside the general cap
+  unacceptable:
+    - "Liability capped at fees paid in last 1 month"
+    - "Total liability capped at €100"
+    - "No liability for any consequential loss including data loss"  # if data is involved
+
+# ============================================================
+# INDEMNITIES
+# ============================================================
+indemnities:
+  ip_infringement_required: true    # supplier must indemnify against IP infringement claims
+  mutual_preferred: true            # but not always required for low-risk contracts
+  unacceptable:
+    - "Customer indemnifies supplier for use of the service"  # supplier should indemnify customer
+    - "No indemnity for IP infringement"
+
+# ============================================================
+# DATA PROTECTION (GDPR / UK GDPR)
+# ============================================================
+data_protection:
+  dpa_required_if_personal_data: true
+  art_28_gdpr_compliance_required: true
+  sub_processor_approval_required: true       # prior written consent or right to object
+  data_breach_notification_hours: 24          # max acceptable
+  international_transfer_safeguards_required: true   # SCCs / adequacy decision / IDTA
+  data_return_destruction_required: true
+  audit_rights_required: true
+  unacceptable:
+    - "Supplier may use personal data for its own purposes"
+    - "Sub-processors added at supplier's sole discretion"
+    - "Data breach notification within 'reasonable time'"   # too vague
+    - "Data may be transferred to any jurisdiction"
+
+# ============================================================
+# TERMINATION
+# ============================================================
+termination:
+  termination_for_convenience_required: true
+  max_notice_period_days: 90
+  termination_for_breach_cure_period_days: 30
+  data_export_period_days_minimum: 30
+  unacceptable:
+    - "Auto-renewal with no notice period"
+    - "Termination only at end of initial term"
+    - "No data export rights on termination"
+
+# ============================================================
+# PAYMENT
+# ============================================================
+payment:
+  preferred_terms_days: 30          # NET-30
+  acceptable_terms_days: 60         # NET-60 acceptable, NET-15 should be pushed back
+  price_increase_cap_percent: 5     # annual cap, or CPI-linked
+  unacceptable:
+    - "Payment in advance for multi-year term"
+    - "Uncapped annual price increases"
+    - "Late payment interest above 8% over base rate"
+
+# ============================================================
+# WARRANTIES
+# ============================================================
+warranties:
+  service_warranty_required: true
+  uptime_sla_required_if_saas: true
+  minimum_uptime_percent: 99.5
+  service_credits_required: true
+  unacceptable:
+    - "Service provided 'as-is' with no warranties"  # for paid SaaS, unacceptable
+    - "No SLA or service credits"
+
+# ============================================================
+# IP & DATA OWNERSHIP
+# ============================================================
+ip:
+  customer_data_ownership_required: true
+  feedback_licence_acceptable: true   # most suppliers ask for a feedback licence — usually fine
+  unacceptable:
+    - "Supplier owns derivative works of customer data"
+    - "Supplier may use customer data to train models"  # critical for AI tools — check carefully
+
+# ============================================================
+# CONTRACT-TYPE OVERRIDES
+# ============================================================
+contract_type_overrides:
+  NDA:
+    max_term_years: 3
+    mutual_preferred: true
+    residuals_clause_acceptable: false   # "residual knowledge" clauses are problematic
+  DPA:
+    # everything in data_protection above applies; no relaxation
+    strict_mode: true
+  SaaS:
+    # uptime and data export are critical
+    uptime_required: true
+    data_export_critical: true
+
+# ============================================================
+# OUTPUT PREFERENCES
+# ============================================================
+output:
+  default_format: "markdown"        # markdown | docx
+  include_negotiation_cheat_sheet: true
+  include_walk_away_triggers: true
+  tone: "honest"                    # honest = direct, plain English (procure-voice style)
