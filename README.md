@@ -87,6 +87,35 @@ These show what to expect when each skill fires. They're also the easiest way to
 - **Not a replacement for a P2P platform.** spend-prism reads exports from Coupa/Ariba/SAP; it doesn't replace them.
 - **Not agents.** No orchestration, no scheduled runs, no connectors. Skills are invoked by you, in the moment, and complete in a single conversation.
 
+## How to verify a skill triggered
+
+Skills run silently by default in Claude.ai. To make activation
+visible, each of these skills emits a one-line tag on first
+invocation in a conversation:
+
+| Skill | Tag |
+|---|---|
+| redline-sentry | 🛡️ **redline-sentry** activated — running contract review. |
+| spend-prism | 📊 **spend-prism** activated — running spend analysis. |
+| bid-compass | 🧭 **bid-compass** activated — guiding RFP workflow. |
+| supplier-truthcheck | 🔍 **supplier-truthcheck** activated — running vendor validation. |
+| procure-voice | ✍️ **procure-voice** activated — rewriting in plain English. |
+
+If you see the tag, the skill fired. The tag appears once per
+conversation per skill — re-invoking the same skill later in the
+same chat won't repeat it.
+
+You can also invoke any skill explicitly via slash command in Claude
+Code: `/redline-sentry`, `/spend-prism`, `/bid-compass`,
+`/supplier-truthcheck`, `/procure-voice`. In Claude.ai
+(Pro/Team/Enterprise) skills auto-trigger from natural language
+matching the description.
+
+**Other ways to confirm a skill is active**: in Claude Code or
+Cowork, expand the tool-call block above the response — you'll see
+Claude reading `SKILL.md` from the relevant skill folder. Or just
+ask Claude: "which skill did you use?"
+
 ## Roadmap (community input welcome)
 
 Things explicitly **not** in v1, considered for future:

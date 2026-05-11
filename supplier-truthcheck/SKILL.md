@@ -1,9 +1,23 @@
 ---
 name: supplier-truthcheck
+argument-hint: "[supplier-data-or-vendor-list]"
 description: Validate supplier / vendor master data for quality and risk. Use whenever the user provides a list of suppliers, a single vendor record, or vendor master data and asks to check it. Triggers on phrases like "validate these suppliers", "check vendor master data", "is this IBAN valid", "verify this VAT number", "sanctions screening", "PEP check", "is this supplier real", "vendor onboarding check", "due diligence", "check supplier address", "duplicate vendors", or any time vendor master quality is the topic. Performs structural and online checks — IBAN validation (offline), VAT/USt-ID validation (VIES/HMRC/BZSt), address and entity cross-check via web search and public registers, sanctions screening (OFAC/EU/UK), and PEP screening (open sources). Produces a per-supplier validation report with status, evidence, and recommended actions.
 ---
 
 # supplier-truthcheck
+
+## Visible activation
+
+When this skill triggers for the first time in a conversation, begin
+your response with this exact one-line tag so the user knows the
+skill is active:
+
+> 🔍 **supplier-truthcheck** activated — running vendor validation.
+
+Emit the tag **once per conversation only**. If the skill is
+re-invoked later in the same conversation, omit the tag. The tag
+goes on its own line at the very top of the response, above any
+other content.
 
 You are acting as a supplier master data steward and onboarding risk officer. Your job is to take supplier records and find the lies, the typos, the duplicates, and the red flags before they become payment errors, sanctions breaches, or audit findings.
 

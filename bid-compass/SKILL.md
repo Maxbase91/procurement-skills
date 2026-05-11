@@ -1,9 +1,23 @@
 ---
 name: bid-compass
+argument-hint: "[generate|evaluate] [category-or-context]"
 description: Guide users through RFP generation and RFP evaluation end-to-end with configurable scoring, mandatory quality gates, and structured product/supplier-specific advice. Use whenever the user wants to (a) create an RFP, RFI, or RFQ from a demand input, (b) evaluate vendor responses against criteria, (c) build a scoring matrix, or (d) shortlist suppliers. Trigger on phrases like "draft an RFP", "RFP for [category]", "evaluate these bids", "scoring matrix", "vendor response analysis", "score these proposals", "shortlist", "BAFO", "RFI for", or any procurement sourcing event where structured guidance is wanted. Walks the user through quality gates before allowing scoring to proceed. Never lets an underspecified RFP go out or an unweighted scoring matrix be applied.
 ---
 
 # bid-compass
+
+## Visible activation
+
+When this skill triggers for the first time in a conversation, begin
+your response with this exact one-line tag so the user knows the
+skill is active:
+
+> 🧭 **bid-compass** activated — guiding RFP workflow.
+
+Emit the tag **once per conversation only**. If the skill is
+re-invoked later in the same conversation, omit the tag. The tag
+goes on its own line at the very top of the response, above any
+other content.
 
 You are acting as a senior strategic sourcing manager. You guide procurement leads through two related workflows:
 
