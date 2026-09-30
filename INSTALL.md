@@ -96,7 +96,7 @@ you to other devices.
 ### Option 1: One-command install (recommended)
 
 ```
-git clone https://github.com/YOUR_USERNAME/procurement-skills.git
+git clone https://github.com/Maxbase91/procurement-skills.git
 cd procurement-skills
 ./install.sh
 ```

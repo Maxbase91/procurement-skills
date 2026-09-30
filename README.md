@@ -34,7 +34,7 @@ details in [INSTALL.md](INSTALL.md).
 ### Most users: Claude.ai web / Claude Desktop / mobile / Cowork
 
 ```
-git clone https://github.com/YOUR_USERNAME/procurement-skills.git
+git clone https://github.com/Maxbase91/procurement-skills.git
 cd procurement-skills
 ./install.sh --package
 ```
@@ -50,7 +50,7 @@ Requires Claude.ai Pro/Max/Team/Enterprise with code execution enabled.
 ### Developers: Claude Code
 
 ```
-git clone https://github.com/YOUR_USERNAME/procurement-skills.git
+git clone https://github.com/Maxbase91/procurement-skills.git
 cd procurement-skills
 ./install.sh
 ```
@@ -152,6 +152,12 @@ Pull requests welcome, especially:
 - Worked examples in your industry vertical
 
 The skills follow [Anthropic's skill-creator conventions](https://docs.claude.com): YAML frontmatter with `name` and `description`, body in Markdown, references and templates in subfolders. Keep SKILL.md under 500 lines; push detail to references.
+
+## Documentation
+
+- [docs/PRD.md](docs/PRD.md) — scope, requirements, known gaps
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — packaging, distribution, trust boundaries
+- [docs/DESIGN.md](docs/DESIGN.md) — per-skill input / config / output contracts
 
 ## License
 
