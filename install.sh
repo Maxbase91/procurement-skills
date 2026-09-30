@@ -26,7 +26,12 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --force)         MODE="force";        shift ;;
     --skip-existing) MODE="skip";         shift ;;
-    --target)        TARGET="$2";         shift 2 ;;
+    --target)
+      if [[ $# -lt 2 || -z "$2" ]]; then
+        echo "Error: --target requires a directory path." >&2
+        exit 1
+      fi
+      TARGET="$2"; shift 2 ;;
     --package)       MODE="package";      shift ;;
     -h|--help)
       cat <<EOF
@@ -99,6 +104,13 @@ if [[ -z "$TARGET" ]]; then
 fi
 
 mkdir -p "$TARGET"
+
+# Refuse to install into the repo itself: --force would rm -rf the source
+# skill folders before copying them.
+if [[ "$(cd "$TARGET" && pwd -P)" == "$(cd "$SCRIPT_DIR" && pwd -P)" ]]; then
+  echo "Error: --target must not be the repository directory ($SCRIPT_DIR)." >&2
+  exit 1
+fi
 
 echo "Installing procurement skills into: $TARGET"
 echo
