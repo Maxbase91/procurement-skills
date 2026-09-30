@@ -83,3 +83,46 @@ def validate_vat_format(vat: str) -> bool:
 ```
 
 A format check pass does NOT mean the VAT is valid or assigned to anyone — it means the structure is plausible. Always follow with VIES/HMRC verification for cross-border or significant supplier relationships.
+
+## China USCI
+
+Mainland China's Unified Social Credit Code (USCI/USCC) is an 18-character entity identifier under **GB 32100-2015**. It has no added `CN` prefix and must not be sent to the EU VIES or UK HMRC VAT-number endpoints.
+
+The alphabet is `0123456789ABCDEFGHJKLMNPQRTUWXY` (31 characters; `I`, `O`, `Z`, `S` and `V` are excluded). The first 17 characters carry the identifier; the final character is a modulo-31 checksum. The weights are `3**i mod 31` for zero-based positions `i=0..16`; a zero residue maps to character `0`.
+
+This helper checks length, permitted characters and checksum only. It deliberately does **not** validate every registration-authority/category/administrative-division rule, query a register, establish current status or match a seller or bank beneficiary. A checksum-valid string can be constructed without any registration.
+
+```python
+import unicodedata
+
+USCI_CHARS = "0123456789ABCDEFGHJKLMNPQRTUWXY"
+USCI_WEIGHTS = (1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28)
+
+def usci_checksum_matches(raw: str) -> bool:
+    # Formatting tolerance is not evidence of a registered entity.
+    if not isinstance(raw, str):
+        return False
+    code = unicodedata.normalize("NFKC", raw).strip().upper()
+    if len(code) != 18 or any(c not in USCI_CHARS for c in code):
+        return False
+    total = sum(USCI_CHARS.index(c) * w for c, w in zip(code[:17], USCI_WEIGHTS))
+    expected = USCI_CHARS[(31 - total % 31) % 31]
+    return code[-1] == expected
+```
+
+Small synthetic regression fixtures (these are not registered-company examples):
+
+```python
+assert usci_checksum_matches("000000000000000000")  # Sum zero: checksum character 0
+assert not usci_checksum_matches("000000000000000001")
+assert not usci_checksum_matches("00000000000000000I")
+assert not usci_checksum_matches("00000000000000000")
+assert usci_checksum_matches(" ００００００００００００００００００ ")
+```
+
+Sources and further checks:
+
+- [SAMR standard catalogue: GB 32100-2015](https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D808D6D3A7E05397BE0A0AB82A).
+- [Government-hosted copy of GB 32100-2015, section 4.2.5 and Appendix A](https://www.shandan.gov.cn/zfxxgk/fdzdgknr/qtfdxx/shzz/202402/W020240220405892314500.pdf).
+- [Free browser checker with explicit limits](https://currawongweb.com/verify/china-usci-checker/) for manual checks; its operator is a commercial supplier-verification provider. The code above is self-contained and requires no provider account or network request.
+- Follow the [China register instructions](registers-by-country.md#china-mainland) for a separate, dated identity-record check.

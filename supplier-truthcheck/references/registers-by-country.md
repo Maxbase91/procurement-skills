@@ -103,6 +103,16 @@ The US has no federal company register. Each state runs its own Secretary of Sta
 
 For federal-level data: EIN is not publicly searchable in most cases. For public companies: SEC EDGAR at `https://www.sec.gov/edgar/`.
 
+## China (mainland)
+
+**National Enterprise Credit Information Publicity System (GSXT)** — `https://www.gsxt.gov.cn/`
+
+- Obtain the exact registered Chinese name and the 18-character Unified Social Credit Code (USCI/USCC) from the business licence; an English trading name is not a unique legal identifier.
+- First check the code's characters and checksum using the [China USCI reference](tax-id-formats.md#china-usci). A passing checksum does not establish that the entity exists or that the code belongs to this supplier.
+- Use the official portal's ordinary search interface and complete any required verification yourself. No public automated lookup API is assumed here; do not bypass access controls.
+- Where a record is returned, compare the exact name and code, registration status, registered address and stated business scope. Preserve the source and lookup date. Registration information alone does not establish factory ownership, product compliance or the beneficiary of a payment.
+- If the portal cannot be reached or the search cannot be completed, record **not checked**, not **not found**. Keep an English alias separately and request the Chinese legal name before treating a name search as a negative result.
+
 ## Other notable
 
 - **Canada**: Corporations Canada — `https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/`
