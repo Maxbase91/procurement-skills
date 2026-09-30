@@ -1,1 +1,34 @@
+# Build output (install.sh --package)
 dist/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local agent context — this is a PUBLIC repo; CLAUDE.md stays local-only
+CLAUDE.md
+.claude/settings.local.json
+.claude/worktrees/
+.claude/launch.json
+
+# Secrets (none are used today; guard against accidental commits)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python helpers / caches (e.g. running the sanctions snippet locally)
+.venv/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Local demo input files dropped into a skill root (not reviewed for publication).
+# To publish a sample deliberately, put it under <skill>/examples/ instead.
+/*/sample-*
