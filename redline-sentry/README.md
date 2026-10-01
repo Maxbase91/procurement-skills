@@ -40,8 +40,7 @@ redline-sentry/
 ├── config.yaml                       # YOUR editable playbook
 ├── README.md                         # this file
 ├── templates/
-│   ├── default-playbook.yaml         # read-only reference defaults
-│   └── redline-output.docx           # base doc for DOCX output (TODO: ship)
+│   └── default-playbook.yaml         # read-only copy of the shipped defaults
 └── examples/
     └── sample-nda-review.md          # worked example
 ```

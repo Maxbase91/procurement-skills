@@ -117,7 +117,7 @@ A common mistake is scoring things that should be gates. If a vendor doesn't mee
 ### Generate-5. Produce the RFP package
 
 Output:
-1. **RFP document** (DOCX, using docx skill + `templates/rfp-base.docx`)
+1. **RFP document** (DOCX, built from scratch with the docx skill; no base template is needed. Use a cover page with the RFP title, buyer, issue date and response deadline, numbered headings for the sections below (the `rfp_sections` list in config.yaml), and a short table of contents)
    - Section 1: Introduction & company context
    - Section 2: Scope & requirements (mandatory + desirable)
    - Section 3: Commercial requirements
@@ -129,13 +129,16 @@ Output:
    - Appendix A: Response template (forces structured responses)
    - Appendix B: Pricing template (XLSX, separate)
 
-2. **Pricing template** (XLSX, using xlsx skill)
+2. **Pricing template** (XLSX, built from scratch with the xlsx skill; one row per cost line, columns for Year 1, Year 2, Year 3 and Total, with empty input cells for vendors to fill)
    - Year 1, 2, 3 with all expected costs
    - Optional features priced separately
    - Implementation, training, support broken out
    - TCO row at the bottom
 
-3. **Scoring matrix** (XLSX) — pre-populated with the agreed criteria and weights, ready to receive responses.
+3. **Scoring matrix** (XLSX, built from scratch with the xlsx skill) — pre-populated with the agreed criteria and weights, ready to receive responses. Layout:
+   - Sheet "Gates": one row per mandatory requirement, one Pass/Fail column per vendor
+   - Sheet "Scores": columns Criterion, Weight %, then per vendor a Score column (on the `scoring.scale` from config.yaml, default 1-5) and an Evidence column; a weighted-total row at the bottom using formulas (score × weight), so totals update when scores change
+   - Sheet "Method": the scoring scale and the weights as agreed in Generate-3
 
 Save all to `/mnt/user-data/outputs/` and use `present_files`.
 
@@ -249,8 +252,5 @@ If the user asks "what should I push on now," produce a negotiation brief:
 
 - `config.yaml` — scoring weights, quality gates, evaluation scale
 - `references/category-advice.md` — category-specific tips and templates
-- `templates/rfp-base.docx` — RFP starting document (TODO: ship)
-- `templates/scoring-matrix.xlsx` — scoring template (TODO: ship)
-- `templates/pricing-template.xlsx` — vendor pricing template (TODO: ship)
 - `examples/sample-rfp-generation.md` — worked example: generation
 - `examples/sample-evaluation.md` — worked example: evaluation

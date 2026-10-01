@@ -38,8 +38,7 @@ spend-prism/
 ├── config.yaml                         # YOUR settings
 ├── README.md
 ├── templates/
-│   ├── default-taxonomy.yaml           # reference L1/L2 starter
-│   └── spend-brief-template.md         # output structure (TODO: ship)
+│   └── default-taxonomy.yaml           # reference L1/L2 starter
 └── examples/
     └── sample-spend-analysis.md        # worked example
 ```

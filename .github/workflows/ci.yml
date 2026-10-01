@@ -30,8 +30,11 @@ jobs:
       - name: Validate skills and install.sh
         run: python scripts/validate.py
 
-      - name: Shellcheck test script
-        run: shellcheck scripts/test-install.sh
+      - name: Shellcheck test scripts
+        run: shellcheck scripts/test-install.sh scripts/test-validate.sh
+
+      - name: Validator tests (temp dir)
+        run: ./scripts/test-validate.sh
 
       - name: Installer tests (temp dir)
         run: ./scripts/test-install.sh

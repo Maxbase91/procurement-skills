@@ -7,13 +7,11 @@ Checks, per skill folder (any top-level folder containing SKILL.md):
   - SKILL.md is under the 500-line limit for Agent Skills
   - every *.yaml / *.yml file in the skill parses
   - every relative file path referenced in SKILL.md (backticked) exists
+  - redline-sentry/templates/default-playbook.yaml holds the same values as
+    redline-sentry/config.yaml (it is the fallback / restore-defaults copy)
 And for the repo:
   - the SKILLS array in install.sh matches the skill folders
   - `bash -n install.sh` passes; shellcheck runs if it is installed
-
-References listed in scripts/known-missing.txt are reported as warnings
-instead of errors: they are files the skills mention but the repo does not
-ship yet, pending an owner decision (adding them changes skill output).
 
 Exit code 0 = no errors (warnings allowed), 1 = at least one error.
 Requires Python 3.11+ and PyYAML (see requirements-dev.txt).
@@ -30,7 +28,6 @@ from pathlib import Path
 import yaml
 
 REPO = Path(__file__).resolve().parent.parent
-KNOWN_MISSING_FILE = REPO / "scripts" / "known-missing.txt"
 MAX_SKILL_LINES = 500
 
 # Backticked relative paths such as `templates/foo.docx` or `config.yaml`.
@@ -50,17 +47,6 @@ def warn(msg: str) -> None:
     warnings.append(msg)
 
 
-def load_known_missing() -> set[str]:
-    if not KNOWN_MISSING_FILE.exists():
-        return set()
-    entries: set[str] = set()
-    for line in KNOWN_MISSING_FILE.read_text(encoding="utf-8").splitlines():
-        line = line.split("#", 1)[0].strip()
-        if line:
-            entries.add(line)
-    return entries
-
-
 def parse_frontmatter(text: str) -> dict | None:
     if not text.startswith("---\n"):
         return None
@@ -71,7 +57,7 @@ def parse_frontmatter(text: str) -> dict | None:
     return data if isinstance(data, dict) else None
 
 
-def check_skill(skill_dir: Path, known_missing: set[str]) -> None:
+def check_skill(skill_dir: Path) -> None:
     name = skill_dir.name
     skill_md = skill_dir / "SKILL.md"
     text = skill_md.read_text(encoding="utf-8")
@@ -107,15 +93,26 @@ def check_skill(skill_dir: Path, known_missing: set[str]) -> None:
             error(f"{yml.relative_to(REPO)}: invalid YAML ({exc.__class__.__name__})")
 
     for ref in sorted(set(REF_RE.findall(text))):
-        rel = f"{name}/{ref}"
-        if (skill_dir / ref).exists():
-            continue
-        if rel in known_missing:
-            warn(
-                f"{rel}: referenced in SKILL.md but not shipped (listed in known-missing.txt)"
-            )
-        else:
-            error(f"{rel}: referenced in {name}/SKILL.md but does not exist")
+        if not (skill_dir / ref).exists():
+            error(f"{name}/{ref}: referenced in {name}/SKILL.md but does not exist")
+
+
+def check_default_playbook() -> None:
+    config = REPO / "redline-sentry" / "config.yaml"
+    default = REPO / "redline-sentry" / "templates" / "default-playbook.yaml"
+    if not (config.exists() and default.exists()):
+        return  # missing files are reported by the reference check
+    try:
+        config_data = yaml.safe_load(config.read_text(encoding="utf-8"))
+        default_data = yaml.safe_load(default.read_text(encoding="utf-8"))
+    except yaml.YAMLError:
+        return  # invalid YAML is reported by check_skill
+    if not isinstance(default_data, dict) or not default_data:
+        error(f"{default.relative_to(REPO)}: holds no YAML values")
+    elif default_data != config_data:
+        error(
+            f"{default.relative_to(REPO)}: values differ from redline-sentry/config.yaml; keep the shipped defaults in sync"
+        )
 
 
 def check_install_sh(skill_names: list[str]) -> None:
@@ -146,18 +143,14 @@ def check_install_sh(skill_names: list[str]) -> None:
 
 
 def main() -> int:
-    known_missing = load_known_missing()
     skill_dirs = sorted(p.parent for p in REPO.glob("*/SKILL.md"))
     if not skill_dirs:
         error("no skills found (expected <skill>/SKILL.md)")
 
     for skill_dir in skill_dirs:
-        check_skill(skill_dir, known_missing)
+        check_skill(skill_dir)
 
-    # Stale allowlist entries hide nothing, but should be cleaned up.
-    for rel in sorted(known_missing):
-        if (REPO / rel).exists():
-            error(f"known-missing.txt lists {rel}, which now exists; remove the entry")
+    check_default_playbook()
 
     check_install_sh([d.name for d in skill_dirs])
 

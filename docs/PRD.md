@@ -41,13 +41,13 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 | ID | Requirement | Status |
 |---|---|---|
 | FR-1 | redline-sentry classifies contract type, runs a clause checklist against `config.yaml`, outputs a fixed Markdown structure (risk rating, issues, redlines, cheat sheet) | Implemented (instructions) |
-| FR-2 | redline-sentry produces a DOCX tracked-changes redline from `templates/redline-output.docx` | **Gap**: template file does not exist |
-| FR-3 | redline-sentry falls back to `templates/default-playbook.yaml` when config is missing | **Gap**: that file contains only comments, so the fallback has no machine-readable values |
+| FR-2 | redline-sentry produces a DOCX tracked-changes redline on the user's own contract DOCX (or a new DOCX built with the docx skill), with the review on a cover page | Implemented (instructions); no template file |
+| FR-3 | redline-sentry falls back to `templates/default-playbook.yaml` when config is missing | Implemented; the file equals the shipped `config.yaml` (checked by `validate.py`) |
 | FR-4 | spend-prism detects source system from headers, cleans, categorises, detects anomalies, outputs a fixed brief; XLSX above 500 rows | Implemented (instructions) |
-| FR-5 | spend-prism uses `templates/spend-brief-template.md` | **Gap**: file does not exist (the structure is inline in SKILL.md) |
+| FR-5 | spend-prism output follows the brief structure inline in SKILL.md | Implemented (instructions); no template file |
 | FR-6 | bid-compass generate mode enforces quality gates, builds weighted scoring matrix (sum 100, no single weight >50% unless justified) | Implemented (instructions) |
 | FR-7 | bid-compass evaluate mode checks mandatory gates before scoring, scores symmetrically with evidence | Implemented (instructions) |
-| FR-8 | bid-compass ships `rfp-base.docx`, `scoring-matrix.xlsx`, `pricing-template.xlsx` | **Gap**: marked TODO in SKILL.md |
+| FR-8 | bid-compass builds the RFP DOCX, pricing XLSX and scoring-matrix XLSX from scratch with the docx/xlsx skills, using the layout in SKILL.md | Implemented (instructions); no template files |
 | FR-9 | supplier-truthcheck runs 5 check layers (structural, VAT online, register/address, sanctions, PEP) plus batch duplicate detection | Implemented (instructions) |
 | FR-10 | Sanctions hits are never softened | Implemented (instructions) |
 | FR-11 | procure-voice rewrites to plain English; applied as overlay by the other skills | Implemented (instructions) |
@@ -73,7 +73,7 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 | Prompt injection via contracts, bids, spend exports or fetched web pages skews a review, score or sanctions result | "Untrusted input" section in four skills; human review still required |
 | Users treat output as legal advice or authoritative sanctions screening | Disclaimers in README and redline-sentry output |
 | Supplier data (names, VAT, directors) sent to third-party services and web search | supplier-truthcheck limits fields sent; no user-facing consent step (open question) |
-| Missing templates referenced by skills cause inconsistent DOCX/XLSX output | Tracked as gaps FR-2/3/5/8 and allow-listed in `scripts/known-missing.txt`; CI fails on any new missing reference |
+| DOCX/XLSX output varies between runs (no base templates) | SKILL.md specifies sections and sheet layouts; CI fails on any SKILL.md reference to a file that does not exist |
 | Skills drift between Claude.ai and Claude Code installs | Documented in INSTALL.md (no sync) |
 
 ## 8. Open questions
@@ -81,4 +81,3 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 - Should supplier-truthcheck tell the user, before online checks, which data leaves their environment and to whom?
 - Is there a versioning/release process beyond commit messages (tags, GitHub Releases referenced in INSTALL.md)?
 - Should the synthetic demo inputs (sample NDA, Coupa export) be published under `examples/`?
-- For each missing template (FR-2, FR-5, FR-8): ship it, or remove the reference from SKILL.md? Either choice changes skill output.

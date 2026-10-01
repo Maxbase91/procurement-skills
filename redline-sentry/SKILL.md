@@ -35,7 +35,7 @@ Before reading the contract, read `config.yaml` in this skill folder. It contain
 - **Contract-type-specific overrides** (NDA vs MSA vs DPA vs SaaS)
 - **Jurisdiction defaults** — English law / German law / other
 
-If `config.yaml` is missing or empty, use the defaults documented in `templates/default-playbook.yaml` and tell the user once: "I'm using the default playbook. You can edit config.yaml to set your own thresholds."
+If `config.yaml` is missing or empty, load `templates/default-playbook.yaml` instead (same structure, shipped defaults) and tell the user once: "I'm using the default playbook. You can edit config.yaml to set your own thresholds."
 
 ## Step 2 — Identify the contract type
 
@@ -64,7 +64,7 @@ Quote the relevant contract language (keep quotes under 15 words to respect copy
 
 ## Step 4 — Produce the output
 
-ALWAYS use this exact structure. Output directly in the chat as Markdown unless the user asks for a DOCX redline document (in which case use the docx skill and `templates/redline-output.docx` as the starting point).
+ALWAYS use this exact structure. Output directly in the chat as Markdown unless the user asks for a DOCX redline document (in which case see Step 5).
 
 ```markdown
 # Contract Review: [Contract Name / Counterparty]
@@ -100,9 +100,10 @@ One-liners only.
 ## Step 5 — Optional: DOCX redline output
 
 If the user asks for a redline document (not just a summary), use the docx skill to produce a DOCX with tracked changes. The pattern:
-1. Read `templates/redline-output.docx` as the base
+1. Start from the user's own contract file (DOCX) so the redline sits on the original wording. If you only have the contract as PDF or pasted text, create a new DOCX with the docx skill that reproduces the clause headings and the clauses you are changing, and say so at the top of the document
 2. Apply each suggested redline as a tracked change
 3. Add reviewer comments at each issue with the severity tag
+4. Put the Markdown review from Step 4 (summary, critical issues, cheat sheet) on a cover page before the contract text
 
 Save to `/mnt/user-data/outputs/` and use `present_files` to share it.
 
@@ -131,6 +132,5 @@ Save to `/mnt/user-data/outputs/` and use `present_files` to share it.
 ## Files in this skill
 
 - `config.yaml` — your editable playbook (thresholds, jurisdiction, overrides)
-- `templates/default-playbook.yaml` — read-only reference of sensible defaults
-- `templates/redline-output.docx` — base document for DOCX output
+- `templates/default-playbook.yaml` — read-only copy of the shipped defaults (fallback when `config.yaml` is missing; copy it over `config.yaml` to restore defaults)
 - `examples/sample-nda-review.md` — worked example showing the output format

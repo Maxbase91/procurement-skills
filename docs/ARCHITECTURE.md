@@ -37,7 +37,7 @@ The three skill stores do not sync with each other (INSTALL.md).
 | `<skill>/SKILL.md` | YAML frontmatter (`name`, `argument-hint`, `description`) + Markdown procedure | The skill itself. `description` drives auto-triggering; body is the procedure Claude follows. |
 | `<skill>/config.yaml` | Org-editable settings (4 skills; procure-voice has none) | Playbook, taxonomy, weights, check toggles, output format. Read by Claude at step 0/1. |
 | `<skill>/references/*.md` | Domain reference tables | Loaded on demand (IBAN formats, tax IDs, registers, sanctions sources, category advice). |
-| `<skill>/templates/*` | Default playbook / taxonomy YAML | Fallback and starter data. Several referenced templates are missing (see §8). |
+| `<skill>/templates/*` | Default playbook / taxonomy YAML | Fallback and starter data. No DOCX/XLSX base templates: those files are built from scratch with the docx/xlsx skills, following the layout in SKILL.md. |
 | `<skill>/examples/*.md` | Worked outputs | Show the expected output format; not loaded as instructions. |
 | `<skill>/README.md` | Human docs per skill | Not used by the runtime. |
 | `install.sh` | Bash installer and packager | See §5. |
@@ -96,14 +96,12 @@ No API keys are used. Rate limits are configured in `supplier-truthcheck/config.
 
 ## 8. Known tech debt
 
-- Missing referenced files: `redline-sentry/templates/redline-output.docx`, `spend-prism/templates/spend-brief-template.md`, `bid-compass/templates/{rfp-base.docx,scoring-matrix.xlsx,pricing-template.xlsx}`.
-- `redline-sentry/templates/default-playbook.yaml` is comments only. The "missing config" fallback and the "copy over config.yaml to restore defaults" advice both produce an empty config.
 - supplier-truthcheck says to stop early on a sanctions hit, but sanctions is check 4 of 5 (after IBAN/VAT). Ordering and early exit are inconsistent.
 - Skill list is hard-coded in `install.sh` and duplicated in README/INSTALL. `scripts/validate.py` fails if the `install.sh` list drifts from the skill folders; README/INSTALL are not checked.
-- The missing templates above are allow-listed in `scripts/known-missing.txt` (reported as warnings) until the owner decides to ship or drop them.
 
 ## 9. Validation and CI
 
-- `scripts/validate.py` (Python 3.11+, PyYAML from `requirements-dev.txt`): SKILL.md frontmatter parses, has `name` == folder and a `description`; SKILL.md < 500 lines; every `*.yaml` parses; every backticked relative path in SKILL.md exists (except `known-missing.txt` entries); `SKILLS=(...)` in `install.sh` matches the folders; `bash -n` and, if installed, `shellcheck` on `install.sh`.
+- `scripts/validate.py` (Python 3.11+, PyYAML from `requirements-dev.txt`): SKILL.md frontmatter parses, has `name` == folder and a `description`; SKILL.md < 500 lines; every `*.yaml` parses; every backticked relative path in SKILL.md exists (no allow-list); `redline-sentry/templates/default-playbook.yaml` parses to the same values as `redline-sentry/config.yaml`; `SKILLS=(...)` in `install.sh` matches the folders; `bash -n` and, if installed, `shellcheck` on `install.sh`.
 - `scripts/test-install.sh`: copies tracked files into a temp git repo, sets `HOME` to a temp dir, and tests argument errors, default target, install/skip/force/interactive (including closed stdin), the repo/symlink self-destruct guard, and `--package` output (structure, untracked files excluded).
-- `.github/workflows/ci.yml`: runs both on push to `main` and on PRs (`contents: read`, 10-minute timeout, no secrets).
+- `scripts/test-validate.sh`: runs `validate.py` on temp copies of the repo: clean copy passes; a missing reference, a re-added template reference, playbook drift, a comments-only playbook and a name mismatch each fail.
+- `.github/workflows/ci.yml`: runs all three on push to `main` and on PRs (`contents: read`, 10-minute timeout, no secrets).

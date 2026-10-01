@@ -134,7 +134,7 @@ ask Claude: "which skill did you use?"
 
 Things explicitly **not** in v1, considered for future:
 
-- DOCX templates shipping with the skills (currently text-based output; templates are TODO)
+- Branded DOCX/XLSX base templates (today the skills build DOCX/XLSX output from scratch, following the layout in each SKILL.md)
 - A `quality-gates.yaml` shared resource so redline-sentry and bid-compass can reference common organisational standards from one place
 - Local snapshot scripts for sanctions lists (for offline bulk screening)
 - A `category-intel` skill for weekly market briefs (deferred — needs a scheduler, not just a skill)

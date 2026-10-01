@@ -94,7 +94,4 @@ There are no programmatic error shapes. Errors are reported in prose inside the 
 
 ## 4. Inconsistencies to resolve (open questions)
 
-- redline-sentry and bid-compass reference DOCX/XLSX templates that are not shipped. The output contract for those files is undefined until they exist.
-- `templates/default-playbook.yaml` holds no YAML values, so the redline-sentry "missing config" fallback has nothing to load.
 - supplier-truthcheck numbering jumps from "Check 5" to "Step 6", and "stop early at sanctions" conflicts with sanctions running fourth.
-- `spend-prism` lists `templates/spend-brief-template.md`, which does not exist. The template is inline in SKILL.md.

@@ -168,5 +168,5 @@ Save XLSX to `/mnt/user-data/outputs/` and use `present_files`.
 
 - `config.yaml` — your taxonomy, currency, thresholds
 - `templates/default-taxonomy.yaml` — a generic L1/L2 starter taxonomy
-- `templates/spend-brief-template.md` — the output structure
+- The output structure is the Markdown block in Step 6 above; there is no separate template file
 - `examples/sample-spend-analysis.md` — worked example

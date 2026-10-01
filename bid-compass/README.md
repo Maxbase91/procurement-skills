@@ -39,10 +39,6 @@ bid-compass/
 ├── README.md
 ├── references/
 │   └── category-advice.md                   # category-specific tips
-├── templates/
-│   ├── rfp-base.docx                        # base RFP document (TODO: ship)
-│   ├── scoring-matrix.xlsx                  # scoring template (TODO: ship)
-│   └── pricing-template.xlsx                # vendor pricing template (TODO: ship)
 └── examples/
     ├── sample-rfp-generation.md             # worked example: generate mode
     └── sample-evaluation.md                 # worked example: evaluate mode
