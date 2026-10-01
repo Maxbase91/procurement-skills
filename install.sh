@@ -66,15 +66,36 @@ if [[ "$MODE" == "package" ]]; then
   echo "Packaging skills as zips for Claude.ai / Claude Desktop upload"
   echo "Output directory: $DIST"
   echo
+  STAGE=""
+  if git -C "$SCRIPT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    STAGE="$(mktemp -d)"
+    trap 'rm -rf "$STAGE"' EXIT
+  fi
   for SKILL in "${SKILLS[@]}"; do
     SRC="$SCRIPT_DIR/$SKILL"
     if [[ ! -d "$SRC" ]]; then
       echo "  [SKIP] $SKILL — source folder not found"
       continue
     fi
+    # In a git checkout, package only tracked files so local, unreviewed
+    # files dropped into a skill folder (e.g. sample inputs) never ship.
+    # Outside git (e.g. a downloaded source archive) fall back to the folder.
+    ZIP_ROOT="$SCRIPT_DIR"
+    if [[ -n "$STAGE" ]]; then
+      ZIP_ROOT="$STAGE"
+      while IFS= read -r -d '' FILE; do
+        [[ -f "$SCRIPT_DIR/$FILE" ]] || continue
+        mkdir -p "$STAGE/$(dirname "$FILE")"
+        cp "$SCRIPT_DIR/$FILE" "$STAGE/$FILE"
+      done < <(git -C "$SCRIPT_DIR" ls-files -z --cached -- "$SKILL")
+      UNTRACKED=$(git -C "$SCRIPT_DIR" ls-files --others -- "$SKILL" | grep -vc '\.DS_Store$' || true)
+      if [[ "$UNTRACKED" -gt 0 ]]; then
+        echo "  [NOTE] $SKILL — $UNTRACKED untracked file(s) not packaged"
+      fi
+    fi
     # Important: zip the FOLDER so the zip extracts to <skill-name>/SKILL.md
     # not loose files. Claude.ai expects this structure.
-    (cd "$SCRIPT_DIR" && zip -rq "$DIST/${SKILL}.zip" "$SKILL" \
+    (cd "$ZIP_ROOT" && zip -rq "$DIST/${SKILL}.zip" "$SKILL" \
       -x "*.DS_Store" "*/.*")
     SIZE=$(du -h "$DIST/${SKILL}.zip" | cut -f1)
     echo "  [PACKAGED] $SKILL → dist/${SKILL}.zip ($SIZE)"
@@ -144,7 +165,9 @@ for SKILL in "${SKILLS[@]}"; do
         SKIPPED+=("$SKILL")
         ;;
       interactive)
-        read -p "  $SKILL exists. Overwrite? [y/N] " yn
+        # No answer (e.g. stdin closed when piped or in CI) means the
+        # default "N", instead of aborting the whole run under set -e.
+        read -r -p "  $SKILL exists. Overwrite? [y/N] " yn || yn=""
         case "$yn" in
           [Yy]*)
             rm -rf "$DST"
