@@ -30,5 +30,7 @@ __pycache__/
 *.log
 
 # Local demo input files dropped into a skill root (not reviewed for publication).
-# To publish a sample deliberately, put it under <skill>/examples/ instead.
+# The reviewed, synthetic copies live under <skill>/examples/ (tracked).
+# supplier-truthcheck/sample-vendor-record_1.md contains a real VAT number:
+# never publish it; use examples/sample-vendor-record.md instead.
 /*/sample-*

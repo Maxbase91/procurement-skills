@@ -49,5 +49,6 @@ supplier-truthcheck/
 │   ├── sanctions-implementation.md      # how to query each list
 │   └── registers-by-country.md          # company register URLs and methods
 └── examples/
-    └── sample-validation-report.md      # worked example
+    ├── sample-validation-report.md      # worked example
+    └── sample-vendor-record.md          # synthetic vendor record to try the skill on
 ```

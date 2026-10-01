@@ -30,7 +30,7 @@ It is not legal advice. It is a structured first-pass review by an opinionated p
 
 ## Example
 
-See `examples/sample-nda-review.md`.
+See `examples/sample-nda-review.md`. To try it yourself, use the synthetic `examples/sample-nda.docx`.
 
 ## Files
 
@@ -42,5 +42,6 @@ redline-sentry/
 ├── templates/
 │   └── default-playbook.yaml         # read-only copy of the shipped defaults
 └── examples/
-    └── sample-nda-review.md          # worked example
+    ├── sample-nda-review.md          # worked example
+    └── sample-nda.docx               # synthetic NDA to try the skill on
 ```

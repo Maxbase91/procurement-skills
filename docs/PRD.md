@@ -24,7 +24,7 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 
 ### In (as implemented)
 - Five skills, each a folder with `SKILL.md` (frontmatter `name`, `description`, `argument-hint`), `README.md`, and in four cases `config.yaml`.
-- Worked examples under `<skill>/examples/`.
+- Worked examples under `<skill>/examples/`, plus synthetic sample inputs (NDA DOCX, Coupa XLSX, vendor record) to try three of the skills.
 - Reference material under `<skill>/references/` and `<skill>/templates/`.
 - `install.sh`: copy skills to `~/.claude/skills` (or `--target`), with `--force`, `--skip-existing`, interactive collision prompts, and `--package` to build Claude.ai upload zips into `dist/`.
 - Visible one-line activation tag per skill (v0.2).
@@ -80,4 +80,3 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 
 - Should supplier-truthcheck tell the user, before online checks, which data leaves their environment and to whom?
 - Is there a versioning/release process beyond commit messages (tags, GitHub Releases referenced in INSTALL.md)?
-- Should the synthetic demo inputs (sample NDA, Coupa export) be published under `examples/`?

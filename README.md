@@ -92,7 +92,15 @@ Each skill folder has an `examples/` directory with realistic worked outputs:
 - [supplier-truthcheck/examples/sample-validation-report.md](supplier-truthcheck/examples/sample-validation-report.md)
 - [procure-voice/examples/before-after-pairs.md](procure-voice/examples/before-after-pairs.md)
 
-These show what to expect when each skill fires. They're also the easiest way to evaluate whether a skill fits your workflow before you customise it.
+### Sample inputs to try
+
+Synthetic demo inputs you can drop into Claude to see a skill run end to end. All company names, addresses and identifiers in them are fictional:
+
+- [redline-sentry/examples/sample-nda.docx](redline-sentry/examples/sample-nda.docx): a mutual NDA with deliberate problems (7-year term, residuals clause). Ask: "Review this NDA".
+- [spend-prism/examples/sample-coupa-export.xlsx](spend-prism/examples/sample-coupa-export.xlsx): 58 rows of a Coupa-style spend export. Ask: "Analyse this spend".
+- [supplier-truthcheck/examples/sample-vendor-record.md](supplier-truthcheck/examples/sample-vendor-record.md): a vendor onboarding record with a fictional VAT number (DE999888777), IBAN and directors. Ask: "Run supplier-truthcheck on this vendor record".
+
+The worked outputs show what to expect when each skill fires. They're also the easiest way to evaluate whether a skill fits your workflow before you customise it.
 
 ## What this is not
 

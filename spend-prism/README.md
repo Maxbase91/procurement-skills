@@ -40,5 +40,6 @@ spend-prism/
 ├── templates/
 │   └── default-taxonomy.yaml           # reference L1/L2 starter
 └── examples/
-    └── sample-spend-analysis.md        # worked example
+    ├── sample-spend-analysis.md        # worked example
+    └── sample-coupa-export.xlsx        # synthetic Coupa export to try the skill on
 ```
