@@ -64,10 +64,11 @@ No persistent storage. The data contracts are the `config.yaml` schemas and the 
 | default / `--target PATH` | `mkdir -p` target; for each of the 5 hard-coded skill names, copy `<repo>/<skill>` to `<target>/<skill>`. Prompts on collision. Refuses a target that resolves to the repo itself (would otherwise `rm -rf` the source). |
 | `--force` | `rm -rf <target>/<skill>` then copy. Paths are quoted and the skill name is a constant, so the delete is scoped to one folder. |
 | `--skip-existing` | Leaves existing installs alone. |
-| `--package` | Deletes `dist/*.zip`, then zips each skill folder so it extracts to `<skill>/SKILL.md` (Claude.ai requirement), excluding dotfiles. |
+| `--package` | Deletes `dist/*.zip`, then zips each skill folder so it extracts to `<skill>/SKILL.md` (Claude.ai requirement), excluding dotfiles. In a git checkout it stages only `git ls-files` (tracked) files in a temp dir first; outside git it zips the folder as is. |
 
 Notes:
-- The installer copies the **working tree**, not `git ls-files`. Untracked local files inside a skill folder (e.g. a `sample-*.docx`) are installed and packaged too.
+- Install modes copy the **working tree**, so untracked local files inside a skill folder are installed too (users may keep their own additions there). `--package` uses tracked files only.
+- Interactive mode treats no answer (closed stdin, e.g. piped or CI) as the default "N" and skips.
 - No network access, no `curl | bash`, no `sudo`.
 - Default target is `$HOME/.claude/skills` on all platforms.
 
@@ -98,7 +99,11 @@ No API keys are used. Rate limits are configured in `supplier-truthcheck/config.
 - Missing referenced files: `redline-sentry/templates/redline-output.docx`, `spend-prism/templates/spend-brief-template.md`, `bid-compass/templates/{rfp-base.docx,scoring-matrix.xlsx,pricing-template.xlsx}`.
 - `redline-sentry/templates/default-playbook.yaml` is comments only. The "missing config" fallback and the "copy over config.yaml to restore defaults" advice both produce an empty config.
 - supplier-truthcheck says to stop early on a sanctions hit, but sanctions is check 4 of 5 (after IBAN/VAT). Ordering and early exit are inconsistent.
-- No automated validation (frontmatter, YAML parse, referenced-file existence, SKILL.md line limit) and no CI.
-- Skill list is hard-coded in `install.sh` and duplicated in README/INSTALL.
-- `install.sh` packages the working tree, so untracked files can leak into zips.
-- Interactive mode `read` on a closed stdin (piped/CI) aborts under `set -e`.
+- Skill list is hard-coded in `install.sh` and duplicated in README/INSTALL. `scripts/validate.py` fails if the `install.sh` list drifts from the skill folders; README/INSTALL are not checked.
+- The missing templates above are allow-listed in `scripts/known-missing.txt` (reported as warnings) until the owner decides to ship or drop them.
+
+## 9. Validation and CI
+
+- `scripts/validate.py` (Python 3.11+, PyYAML from `requirements-dev.txt`): SKILL.md frontmatter parses, has `name` == folder and a `description`; SKILL.md < 500 lines; every `*.yaml` parses; every backticked relative path in SKILL.md exists (except `known-missing.txt` entries); `SKILLS=(...)` in `install.sh` matches the folders; `bash -n` and, if installed, `shellcheck` on `install.sh`.
+- `scripts/test-install.sh`: copies tracked files into a temp git repo, sets `HOME` to a temp dir, and tests argument errors, default target, install/skip/force/interactive (including closed stdin), the repo/symlink self-destruct guard, and `--package` output (structure, untracked files excluded).
+- `.github/workflows/ci.yml`: runs both on push to `main` and on PRs (`contents: read`, 10-minute timeout, no secrets).

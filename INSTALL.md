@@ -38,6 +38,9 @@ cd procurement-skills
 ```
 This produces 5 zips in `dist/`: `redline-sentry.zip`, `spend-prism.zip`,
 `bid-compass.zip`, `supplier-truthcheck.zip`, `procure-voice.zip`.
+In a git checkout only files tracked by git are packaged, so local files you
+dropped into a skill folder are left out (the script prints a note for each
+skill that has some).
 
 **If you don't want to clone the repo:**
 Download the latest release zip from the GitHub Releases page. Unzip it.

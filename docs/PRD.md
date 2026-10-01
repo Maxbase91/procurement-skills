@@ -52,7 +52,7 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 | FR-10 | Sanctions hits are never softened | Implemented (instructions) |
 | FR-11 | procure-voice rewrites to plain English; applied as overlay by the other skills | Implemented (instructions) |
 | FR-12 | Skills treat input documents and fetched pages as untrusted data | Implemented (added post-v0.3.0) |
-| FR-13 | `install.sh` installs, overwrites, skips, packages | Implemented |
+| FR-13 | `install.sh` installs, overwrites, skips, packages (tracked files only in a git checkout) | Implemented; covered by `scripts/test-install.sh` in CI |
 
 ## 5. Non-functional requirements
 
@@ -73,7 +73,7 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 | Prompt injection via contracts, bids, spend exports or fetched web pages skews a review, score or sanctions result | "Untrusted input" section in four skills; human review still required |
 | Users treat output as legal advice or authoritative sanctions screening | Disclaimers in README and redline-sentry output |
 | Supplier data (names, VAT, directors) sent to third-party services and web search | supplier-truthcheck limits fields sent; no user-facing consent step (open question) |
-| Missing templates referenced by skills cause inconsistent DOCX/XLSX output | None; tracked as gaps FR-2/3/5/8 |
+| Missing templates referenced by skills cause inconsistent DOCX/XLSX output | Tracked as gaps FR-2/3/5/8 and allow-listed in `scripts/known-missing.txt`; CI fails on any new missing reference |
 | Skills drift between Claude.ai and Claude Code installs | Documented in INSTALL.md (no sync) |
 
 ## 8. Open questions
@@ -81,3 +81,4 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 - Should supplier-truthcheck tell the user, before online checks, which data leaves their environment and to whom?
 - Is there a versioning/release process beyond commit messages (tags, GitHub Releases referenced in INSTALL.md)?
 - Should the synthetic demo inputs (sample NDA, Coupa export) be published under `examples/`?
+- For each missing template (FR-2, FR-5, FR-8): ship it, or remove the reference from SKILL.md? Either choice changes skill output.

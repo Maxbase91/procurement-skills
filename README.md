@@ -153,6 +153,13 @@ Pull requests welcome, especially:
 
 The skills follow [Anthropic's skill-creator conventions](https://docs.claude.com): YAML frontmatter with `name` and `description`, body in Markdown, references and templates in subfolders. Keep SKILL.md under 500 lines; push detail to references.
 
+Before opening a PR, run the same checks as CI (needs Python 3.11+, `pip install -r requirements-dev.txt`, and optionally `shellcheck`):
+
+```bash
+python3 scripts/validate.py      # frontmatter, name == folder, YAML, referenced files, install.sh lint
+./scripts/test-install.sh        # installer modes, run in a temp dir
+```
+
 ## Documentation
 
 - [docs/PRD.md](docs/PRD.md) — scope, requirements, known gaps
