@@ -48,7 +48,7 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 | FR-6 | bid-compass generate mode enforces quality gates, builds weighted scoring matrix (sum 100, no single weight >50% unless justified) | Implemented (instructions) |
 | FR-7 | bid-compass evaluate mode checks mandatory gates before scoring, scores symmetrically with evidence | Implemented (instructions) |
 | FR-8 | bid-compass builds the RFP DOCX, pricing XLSX and scoring-matrix XLSX from scratch with the docx/xlsx skills, using the layout in SKILL.md | Implemented (instructions); no template files |
-| FR-9 | supplier-truthcheck runs 5 check layers (structural, VAT online, register/address, sanctions, PEP) plus batch duplicate detection | Implemented (instructions) |
+| FR-9 | supplier-truthcheck shows an upfront data-flow notice, then runs 5 check layers (sanctions first with early stop on a HIT, structural, VAT online, register/address, PEP) plus batch duplicate detection | Implemented (instructions) |
 | FR-10 | Sanctions hits are never softened | Implemented (instructions) |
 | FR-11 | procure-voice rewrites to plain English; applied as overlay by the other skills | Implemented (instructions) |
 | FR-12 | Skills treat input documents and fetched pages as untrusted data | Implemented (added post-v0.3.0) |
@@ -72,11 +72,10 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 |---|---|
 | Prompt injection via contracts, bids, spend exports or fetched web pages skews a review, score or sanctions result | "Untrusted input" section in four skills; human review still required |
 | Users treat output as legal advice or authoritative sanctions screening | Disclaimers in README and redline-sentry output |
-| Supplier data (names, VAT, directors) sent to third-party services and web search | supplier-truthcheck limits fields sent; no user-facing consent step (open question) |
+| Supplier data (names, VAT, directors) sent to third-party services and web search | supplier-truthcheck limits fields sent and shows an upfront notice of which fields go to which service; the user can opt out of individual checks |
 | DOCX/XLSX output varies between runs (no base templates) | SKILL.md specifies sections and sheet layouts; CI fails on any SKILL.md reference to a file that does not exist |
 | Skills drift between Claude.ai and Claude Code installs | Documented in INSTALL.md (no sync) |
 
 ## 8. Open questions
 
-- Should supplier-truthcheck tell the user, before online checks, which data leaves their environment and to whom?
 - Is there a versioning/release process beyond commit messages (tags, GitHub Releases referenced in INSTALL.md)?

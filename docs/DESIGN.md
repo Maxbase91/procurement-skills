@@ -73,6 +73,7 @@ Every skill folder follows the same layout:
   - PEP: NONE / PEP MATCH / RELATIVE OR ASSOCIATE
   - Overall: 🟢 CLEAR / 🟡 REVIEW / 🚨 BLOCK → Onboard / Onboard with EDD / Hold / Reject
 - **Output:** per-supplier Markdown (Structural, Identity, Sanctions, PEP, Findings). XLSX with a "Findings" sheet when there are more than `output.bulk_threshold` (10) suppliers.
+- **Order:** data-flow notice (Step 0b) → sanctions (stop on HIT) → structural → VAT online → register/address → PEP → batch duplicates → output.
 - **Hard rules:** sanctions hits are never softened or silently cleared; never fabricate registry data; state what could not be checked.
 
 ### procure-voice
@@ -94,4 +95,4 @@ There are no programmatic error shapes. Errors are reported in prose inside the 
 
 ## 4. Inconsistencies to resolve (open questions)
 
-- supplier-truthcheck numbering jumps from "Check 5" to "Step 6", and "stop early at sanctions" conflicts with sanctions running fourth.
+- supplier-truthcheck numbering jumps from "Check 5" to "Step 6" (cosmetic).

@@ -4,12 +4,14 @@
 
 ## What it does
 
+Before any online call, it tells you which data goes to which external service (names and address to sanctions lists and web search, the VAT number to VIES/HMRC/BZSt, director names to PEP sources). IBANs, bank details, email, phone and spend never leave your environment.
+
 For each supplier, runs five layers of checks:
 
-1. **Structural validation** (offline, instant): IBAN mod-97, VAT format, tax ID format, email/domain sanity
-2. **Online VAT verification**: VIES (EU) / HMRC (UK) / BZSt strong-check (DE)
-3. **Entity register lookup**: Companies House, Handelsregister, Pappers (FR), Zefix (CH), and other public registers
-4. **Sanctions screening**: OFAC SDN, EU Consolidated, UK Sanctions, UN Consolidated
+1. **Sanctions screening** (first): OFAC SDN, EU Consolidated, UK Sanctions, UN Consolidated. On a hit the review stops for that supplier and is escalated.
+2. **Structural validation** (offline, instant): IBAN mod-97, VAT format, tax ID format, email/domain sanity
+3. **Online VAT verification**: VIES (EU) / HMRC (UK) / BZSt strong-check (DE)
+4. **Entity register lookup**: Companies House, Handelsregister, Pappers (FR), Zefix (CH), and other public registers
 5. **PEP screening**: OpenSanctions for directors and beneficial owners
 
 Plus duplicate detection within a batch (same IBAN, same VAT, same address with similar name).

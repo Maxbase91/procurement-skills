@@ -49,7 +49,7 @@ The three skill stores do not sync with each other (INSTALL.md).
 2. Claude emits the activation tag once per conversation.
 3. Claude reads `config.yaml` (or a user-supplied override in the prompt).
 4. Claude reads the user's input (pasted text, PDF/DOCX, CSV/XLSX).
-5. Skill-specific processing. Only supplier-truthcheck calls external services (via the runtime's web_fetch / web_search tools).
+5. Skill-specific processing. Only supplier-truthcheck calls external services (via the runtime's web_fetch / web_search tools). It first shows a notice listing which fields go to which service, then runs sanctions screening before all other checks and stops for that supplier on a HIT.
 6. Output: Markdown in chat by default. DOCX/XLSX via the platform's docx/xlsx skills, saved to `/mnt/user-data/outputs/` (Claude.ai path convention).
 7. procure-voice is applied as a tone overlay to the other skills' output.
 
@@ -90,13 +90,12 @@ No API keys are used. Rate limits are configured in `supplier-truthcheck/config.
 
 - **Trust boundary 1: input documents.** Contracts, bids, spend exports and vendor records come from third parties. Each reading skill has an "Untrusted input" section: embedded instructions are reported as findings, never followed.
 - **Trust boundary 2: fetched web content** (supplier-truthcheck). The same rule applies. A web page claiming an entity is "cleared" is not evidence.
-- **Data egress.** Only supplier-truthcheck sends data out. It is limited to the fields each check needs, and IBANs/bank details must never go into web search.
+- **Data egress.** Only supplier-truthcheck sends data out. It is limited to the fields each check needs, the user sees an upfront notice of which fields go to which service (and can opt out of checks), and IBANs/bank details must never go into web search.
 - **Installer.** Writes only under the chosen target; deletes only `<target>/<skill>` in force/confirm mode; never touches the repo.
 - **Secrets.** None used. `.gitignore` guards `.env*`, keys, `CLAUDE.md` and local Claude settings.
 
 ## 8. Known tech debt
 
-- supplier-truthcheck says to stop early on a sanctions hit, but sanctions is check 4 of 5 (after IBAN/VAT). Ordering and early exit are inconsistent.
 - Skill list is hard-coded in `install.sh` and duplicated in README/INSTALL. `scripts/validate.py` fails if the `install.sh` list drifts from the skill folders; README/INSTALL are not checked.
 
 ## 9. Validation and CI
