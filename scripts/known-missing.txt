@@ -1,0 +1,9 @@
+# Files referenced by a SKILL.md that the repo does not ship yet.
+# scripts/validate.py reports these as warnings instead of errors.
+# Open question for the owner: ship each template or remove the reference
+# (either choice changes the skill's output). Delete an entry once resolved.
+bid-compass/templates/rfp-base.docx
+bid-compass/templates/scoring-matrix.xlsx
+bid-compass/templates/pricing-template.xlsx
+redline-sentry/templates/redline-output.docx
+spend-prism/templates/spend-brief-template.md
