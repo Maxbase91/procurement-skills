@@ -3,6 +3,9 @@
 # fails on known-bad inputs. Each case runs on a fresh copy of the repo's
 # tracked files in a temp directory, so the real working tree is never changed.
 
+# Literal backticks below are Markdown, not command substitution.
+# shellcheck disable=SC2016
+
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
