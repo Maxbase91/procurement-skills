@@ -1,0 +1,66 @@
+name: Release
+
+# Push a tag like v1.2.0 to publish a GitHub Release with one upload-ready
+# zip per skill (built by `install.sh --package`). The release body is
+# generated from the commits since the previous tag.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Check shell tools
+        run: command -v shellcheck zip unzip
+
+      - name: Validate skills and install.sh
+        run: python scripts/validate.py
+
+      - name: Build skill zips
+        run: ./install.sh --package
+
+      - name: Check zips
+        run: |
+          set -euo pipefail
+          count=0
+          for zip in dist/*.zip; do
+            skill="$(basename "$zip" .zip)"
+            listing="$(unzip -l "$zip")"
+            grep -q " ${skill}/SKILL.md$" <<<"$listing"
+            count=$((count + 1))
+          done
+          expected="$(find . -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)"
+          echo "zips: $count, skills: $expected"
+          test "$count" -eq "$expected"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.zip --clobber
+          else
+            gh release create "$TAG" dist/*.zip --verify-tag --generate-notes --title "$TAG"
+          fi

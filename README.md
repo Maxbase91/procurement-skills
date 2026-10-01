@@ -33,13 +33,17 @@ details in [INSTALL.md](INSTALL.md).
 
 ### Most users: Claude.ai web / Claude Desktop / mobile / Cowork
 
+Download the 5 skill zips from the
+[latest release](https://github.com/Maxbase91/procurement-skills/releases/latest)
+(under **Assets**), or build them yourself:
+
 ```
 git clone https://github.com/Maxbase91/procurement-skills.git
 cd procurement-skills
 ./install.sh --package
 ```
 
-This produces 5 upload-ready zips in `dist/`. Then in Claude.ai:
+This produces the same 5 upload-ready zips in `dist/`. Then in Claude.ai:
 **Settings → Capabilities → Skills → Upload skill**. Upload each zip.
 Once uploaded, the skills appear in the slash menu (`/redline-sentry`,
 `/spend-prism`, etc.) across Claude.ai web, Desktop, mobile, and
@@ -165,8 +169,11 @@ Before opening a PR, run the same checks as CI (needs Python 3.11+, `pip install
 
 ```bash
 python3 scripts/validate.py      # frontmatter, name == folder, YAML, referenced files, install.sh lint
+./scripts/test-validate.sh       # validator pass/fail cases, run on temp copies
 ./scripts/test-install.sh        # installer modes, run in a temp dir
 ```
+
+Maintainers publish a release by pushing a `v*` tag; see [INSTALL.md](INSTALL.md#for-maintainers-publishing-a-release).
 
 ## Documentation
 

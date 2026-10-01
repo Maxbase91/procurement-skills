@@ -31,6 +31,13 @@ your Anthropic account. Upload once, available everywhere you log in.
 
 You need 5 individual zip files, one per skill. Two ways:
 
+**If you don't want to clone the repo (easiest):**
+Open the [latest release](https://github.com/Maxbase91/procurement-skills/releases/latest)
+and download the 5 zips under **Assets**: `redline-sentry.zip`,
+`spend-prism.zip`, `bid-compass.zip`, `supplier-truthcheck.zip`,
+`procure-voice.zip`. They are ready to upload as they are; don't unzip
+them. Ignore the "Source code" archives GitHub adds to every release.
+
 **If you have the repo cloned locally:**
 ```
 cd procurement-skills
@@ -42,12 +49,11 @@ In a git checkout only files tracked by git are packaged, so local files you
 dropped into a skill folder are left out (the script prints a note for each
 skill that has some).
 
-**If you don't want to clone the repo:**
-Download the latest release zip from the GitHub Releases page. Unzip it.
-Then for each of the 5 skill folders, manually zip the folder itself
-(right-click → Compress on Mac, or Send to → Compressed folder on
-Windows). The result must be a zip that, when extracted, contains a
-single folder named after the skill (e.g. `redline-sentry/SKILL.md`).
+If you edit a `config.yaml` (see below), re-zip that skill yourself with
+`./install.sh --package`, or zip the folder itself (right-click → Compress
+on Mac, or Send to → Compressed folder on Windows). The result must be a
+zip that, when extracted, contains a single folder named after the skill
+(e.g. `redline-sentry/SKILL.md`).
 
 ### Step 2 — Upload to Claude.ai
 
@@ -176,6 +182,25 @@ auto-trigger fails, invoke explicitly via slash command. You can
 also tweak the description in SKILL.md, re-zip, and re-upload.
 
 **"Updates from GitHub don't show in my Claude.ai"**
-Correct — they won't. Re-download or re-package the latest version
-and re-upload. Path A doesn't auto-sync. Path B does (next session
+Correct — they won't. Download the zips from the
+[latest release](https://github.com/Maxbase91/procurement-skills/releases/latest)
+(or re-package with `./install.sh --package`) and re-upload. Path A doesn't auto-sync. Path B does (next session
 after `git pull`).
+
+---
+
+## For maintainers: publishing a release
+
+Releases are built by `.github/workflows/release.yml`. Push a version tag
+from `main`:
+
+```
+git tag v0.4.0
+git push origin v0.4.0
+```
+
+The workflow runs `scripts/validate.py`, builds the zips with
+`./install.sh --package` (tracked files only), checks there is one zip per
+skill with `<skill>/SKILL.md` inside, and creates the GitHub Release for the
+tag with the zips attached and notes generated from the commits. Pushing the
+same tag again (after deleting it) re-uploads the zips to the existing release.

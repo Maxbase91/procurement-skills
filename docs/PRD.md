@@ -78,4 +78,5 @@ Positioning (README): a procurement counterpart to Anthropic's finance agent tem
 
 ## 8. Open questions
 
-- Is there a versioning/release process beyond commit messages (tags, GitHub Releases referenced in INSTALL.md)?
+
+None open. Resolved in round 3: missing templates dropped, synthetic samples published under `examples/`, supplier-truthcheck data-flow notice and sanctions-first order, GitHub Releases built by `.github/workflows/release.yml`.
